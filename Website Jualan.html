@@ -216,3 +216,30 @@
 </script>
 </body>
 </html>
+const harga = card.getAttribute('data-price');
+    const img = card.querySelector('img').src;
+    cart.push({nama,harga,img});
+    updateCart();
+  }
+  function updateCart(){
+    document.getElementById('cartCount').innerText = cart.length;
+    const el = document.getElementById('cartItems'); el.innerHTML='';
+    if(cart.length===0){ el.innerHTML='<div class="cart-empty">Keranjang kosong</div>'; document.getElementById('cartSummary').innerText=''; return; }
+    let totalTxt = '';
+    cart.forEach((it,i)=>{
+      el.innerHTML += `<div class="cart-item"><img src="${it.img}" alt=""><div><b>${it.nama}</b><div style="color:var(--muted);">${it.harga}</div><div style="margin-top:8px"><button style=\"padding:6px 8px;margin-right:6px;border-radius:6px;background:#fff;border:1px solid #e6f3ea;cursor:pointer\" onclick=\"removeItem(${i})\">Hapus</button></div></div></div>`;
+      totalTxt += `${it.nama} - ${it.harga}
+`;
+    });
+    document.getElementById('cartSummary').innerText = `${cart.length} item — Siap di-checkout`;
+  }
+  function removeItem(idx){ cart.splice(idx,1); updateCart(); }
+  function buyNow(btn){ const card = btn.closest('.card'); const nama = card.getAttribute('data-name'); const harga = card.getAttribute('data-price'); const pesan = encodeURIComponent(`Halo, saya ingin membeli: ${nama} (${harga}). Apakah masih tersedia?`); window.location.href = `https://wa.me/${waNumber}?text=${pesan}`; }
+  function checkoutWA(){ if(cart.length===0){ alert('Keranjang masih kosong!'); return; } let pesan = 'Halo, saya ingin memesan:%0A'; cart.forEach(it=> pesan += `- ${it.nama} (${it.harga})%0A`); window.location.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesan)}`; }
+  // search filter
+  document.getElementById('searchInput').addEventListener('input',function(e){ const q=e.target.value.toLowerCase(); document.querySelectorAll('.card').forEach(c=>{ const title=c.querySelector('h3').innerText.toLowerCase(); c.style.display = title.includes(q) ? 'flex' : 'none'; }); });
+  // init
+  updateCart();
+</script>
+</body>
+</html>
